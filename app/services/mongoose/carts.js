@@ -4,38 +4,39 @@ const { NotFoundError } = require('../../errors');
 
 const getCart = async (req) => {
   const cart = await Cart.findOne({ user: req.user.id }).populate({
-    path: 'items.item',
+    path: 'items.itemId',
     select: '_id name price',
-  });
+  })
 
-  if (!cart) throw new NotFoundError('Cart tidak ditemukan');
-
+  if (!cart) throw new NotFoundError('Cart tidak ditemukan, silakan tambahkan item ke cart');
+  
   return cart;
 };
 
 const addToCart = async (req) => {
-  const { item, color, size, quantity } = req.body;
+  const { itemId, color, size, quantity } = req.body;
 
   const userId = req.user.id;
 
-  await checkingItems(item);
+  await checkingItems(itemId);
 
   let cart = await Cart.findOne({ user: userId });
 
   if (cart) {
     const itemIndex = cart.items.findIndex(
-      (i) => i.item.toString() === item && i.color === color && i.size === size
+      (i) =>
+        i.itemId.toString() === itemId && i.color === color && i.size === size
     );
 
     if (itemIndex > -1) {
       cart.items[itemIndex].quantity += quantity;
     } else {
-      cart.items.push({ item, color, size, quantity });
+      cart.items.push({ itemId, color, size, quantity });
     }
   } else {
     cart = await Cart.create({
       user: req.user.id,
-      items: [{ item, color, size, quantity }],
+      items: [{ itemId, color, size, quantity }],
     });
   }
 

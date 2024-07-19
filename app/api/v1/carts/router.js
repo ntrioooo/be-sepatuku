@@ -7,15 +7,15 @@ const {
   authorizeRoles,
 } = require('../../../middlewares/auth');
 
-router.get('/cart', authenticateUser, authorizeRoles('user'), index);
+router.get('/carts', authenticateUser, authorizeRoles('user'), index);
 
 // Route untuk menambah item ke cart
-router.post('/cart', authenticateUser, authorizeRoles('user'), create);
+router.post('/carts', authenticateUser, authorizeRoles('user'), create);
 
 // Route untuk menghapus item dari cart
-router.delete('/cart', authenticateUser, authorizeRoles('user'), removeCart);
+router.delete('/carts', authenticateUser, authorizeRoles('user'), removeCart);
 
 // Route untuk membersihkan semua item dalam cart
-router.delete('/cart/clear', authenticateUser, authorizeRoles('user'), clear);
+router.delete('/carts/clear', authenticateUser, authorizeRoles('user'), clear);
 
 module.exports = router;
