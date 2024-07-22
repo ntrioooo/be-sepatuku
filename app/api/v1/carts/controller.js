@@ -5,6 +5,7 @@ const {
   clearCart,
   getCart,
   removeFromCart,
+  updateQuantity,
 } = require('../../../services/mongoose/carts');
 
 const index = async (req, res, next) => {
@@ -41,6 +42,17 @@ const removeCart = async (req, res, next) => {
   }
 };
 
+const updateCartQuantity = async (req, res, next) => {
+  try {
+    const result = await updateQuantity(req);
+    res.status(StatusCodes.OK).json({
+      data: result,
+    });
+  } catch (error) {
+    console.error(error);
+  }
+};
+
 const clear = async (req, res, next) => {
   try {
     const result = await clearCart(req);
@@ -58,4 +70,5 @@ module.exports = {
   removeCart,
   create,
   index,
+  updateCartQuantity,
 };

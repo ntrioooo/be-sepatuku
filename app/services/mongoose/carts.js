@@ -6,10 +6,13 @@ const getCart = async (req) => {
   const cart = await Cart.findOne({ user: req.user.id }).populate({
     path: 'items.itemId',
     select: '_id name price',
-  })
+  });
 
-  if (!cart) throw new NotFoundError('Cart tidak ditemukan, silakan tambahkan item ke cart');
-  
+  if (!cart)
+    throw new NotFoundError(
+      'Cart tidak ditemukan, silakan tambahkan item ke cart'
+    );
+
   return cart;
 };
 
@@ -45,7 +48,29 @@ const addToCart = async (req) => {
 };
 
 const removeFromCart = async (req) => {
-  const { itemId, color, size } = req.body;
+  const { itemId } = req.params;
+  const userId = req.user.id;
+
+  const cart = await Cart.findOne({ user: req.user.id });
+
+  if (!cart) throw new NotFoundError('Cart not found');
+
+  const itemIndex = cart.items.findIndex(
+    (item) => item.itemId.toString() === itemId
+  );
+
+  if (itemIndex > -1) {
+    cart.items.splice(itemIndex, 1);
+    await cart.save();
+    return cart;
+  } else {
+    throw new NotFoundError('Item not found in cart');
+  }
+};
+
+const updateQuantity = async (req) => {
+  const { itemId } = req.params;
+  const { quantity } = req.body;
   const userId = req.user.id;
 
   const cart = await Cart.findOne({ user: userId });
@@ -53,14 +78,11 @@ const removeFromCart = async (req) => {
   if (!cart) throw new NotFoundError('Cart not found');
 
   const itemIndex = cart.items.findIndex(
-    (item) =>
-      item.itemId.toString() === itemId &&
-      item.color === color &&
-      item.size === size
+    (item) => item._id.toString() === itemId
   );
 
   if (itemIndex > -1) {
-    cart.items.splice(itemIndex, 1);
+    cart.items[itemIndex].quantity = quantity;
     await cart.save();
     return cart;
   } else {
@@ -87,4 +109,5 @@ module.exports = {
   addToCart,
   removeFromCart,
   clearCart,
+  updateQuantity,
 };

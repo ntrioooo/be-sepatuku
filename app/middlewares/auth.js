@@ -21,7 +21,6 @@ const authenticateUser = async (req, res, next) => {
       email: payload.email,
       role: payload.role,
       id: payload.userId,
-      organizer: payload.organizer,
       name: payload.name,
     };
 
