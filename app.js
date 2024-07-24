@@ -12,6 +12,7 @@ const authRouter = require('./app/api/v1/auth/router');
 const orderRouter = require('./app/api/v1/orders/router');
 const cartRouter = require('./app/api/v1/carts/router');
 const reviewRouter = require('./app/api/v1/reviews/router');
+const paymentRouter = require('./app/api/v1/payments/router');
 
 const v1 = '/api/v1/';
 
@@ -30,6 +31,7 @@ app.use(`${v1}`, authRouter);
 app.use(`${v1}`, orderRouter);
 app.use(`${v1}`, cartRouter);
 app.use(`${v1}`, reviewRouter);
+app.use(`${v1}`, paymentRouter);
 
 app.use(notFoundMiddleware);
 app.use(handleErrorMiddleware);

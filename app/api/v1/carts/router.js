@@ -6,6 +6,7 @@ const {
   index,
   removeCart,
   updateCartQuantity,
+  updateCartCheck,
 } = require('./controller');
 
 const {
@@ -15,7 +16,6 @@ const {
 
 router.get('/carts', authenticateUser, authorizeRoles('user'), index);
 
-// Route untuk menambah item ke cart
 router.post('/carts', authenticateUser, authorizeRoles('user'), create);
 
 router.put(
@@ -25,7 +25,13 @@ router.put(
   updateCartQuantity
 );
 
-// Route untuk menghapus item dari cart
+router.put(
+  '/carts/updateChecked/:itemId',
+  authenticateUser,
+  authorizeRoles('user'),
+  updateCartCheck
+);
+
 router.delete(
   '/carts/:itemId',
   authenticateUser,
@@ -33,7 +39,6 @@ router.delete(
   removeCart
 );
 
-// Route untuk membersihkan semua item dalam cart
 router.delete('/carts/clear', authenticateUser, authorizeRoles('user'), clear);
 
 module.exports = router;

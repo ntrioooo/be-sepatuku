@@ -1,6 +1,6 @@
 const Cart = require('../../api/v1/carts/model');
 const { checkingItems } = require('./items');
-const { NotFoundError } = require('../../errors');
+const { NotFoundError, BadRequestError } = require('../../errors');
 
 const getCart = async (req) => {
   const cart = await Cart.findOne({ user: req.user.id }).populate({
@@ -90,6 +90,34 @@ const updateQuantity = async (req) => {
   }
 };
 
+const updateCheck = async (req) => {
+  const { itemId } = req.params;
+  const { checked } = req.body;
+
+  const userId = req.user.id;
+
+  const cart = await Cart.findOne({ user: userId });
+
+  if (!cart) throw new NotFoundError('Cart not found');
+
+  try {
+    const itemIndex = cart.items.findIndex(
+      (item) => item._id.toString() === itemId
+    );
+
+    if (itemIndex === -1) {
+      throw new NotFoundError('Item not found in cart');
+    }
+
+    cart.items[itemIndex].checked = checked;
+    await cart.save();
+
+    return cart;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
 const clearCart = async (req) => {
   const userId = req.user.id;
 
@@ -110,4 +138,5 @@ module.exports = {
   removeFromCart,
   clearCart,
   updateQuantity,
+  updateCheck,
 };

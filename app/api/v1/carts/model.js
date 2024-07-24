@@ -20,6 +20,10 @@ const cartItemSchema = new Schema({
     required: true,
     default: 1,
   },
+  checked: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 const cartSchema = new Schema(
